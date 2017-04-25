@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/aop 
+           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/tx
+     	   http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+<!-- 
+<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<property name="mappings">
+		<props>
+			<prop key="start.do">startController</prop>
+			<prop key="login.do">loginController</prop>
+			<prop key="loginCheck.do">loginCheckController</prop>
+			<prop key="addUser.do">addUserController</prop>
+			<prop key="userMulti.do">userMultiActionController</prop>
+		</props>
+	</property>
+</bean>
+-->
+<!--  
+<bean class="org.springframework.web.servlet.mvc.support.ControllerBeanNameHandlerMapping"></bean>
+-->
+<bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"></bean>
+
+<bean id="startController" class="com.test.springmvc.controller.StartController"></bean>
+<!-- 用于直接跳转的ParameterizableViewController,需要指定viewName名称 -->
+<!-- 
+<bean id="loginController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+	<property name="viewName" value="login"></property>
+</bean>
+-->
+<!-- 如果请求名和页面名称一致,可以使用UrlFilenameViewController,省略参数配置 -->
+<bean id="loginController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController"></bean>
+
+<!-- 继承AbstractCommandController,配置commandClass参数来封装表单参数 -->
+<bean id="loginCheckController" class="com.test.springmvc.controller.LoginCheckController">
+	<property name="commandClass" value="com.test.springmvc.bean.User"></property>
+</bean> 
+
+<bean id="addUserController" class="com.test.springmvc.controller.AddUserController">
+	<property name="commandClass" value="com.test.springmvc.bean.User"></property>
+	<property name="formView" value="addUser"></property>
+	<property name="successView" value="success"></property>
+</bean>
+
+<!--  
+<bean id="parameterMethodNameResolver" class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver">
+	<property name="paramName">
+		<value>method</value>
+	</property>
+</bean>
+-->
+<bean id="internalPathMethodNameResolver" class="org.springframework.web.servlet.mvc.multiaction.InternalPathMethodNameResolver"></bean>
+
+<bean name="/userMulti.do" id="userMultiActionController" class="com.test.springmvc.controller.UserMultiActionController">
+	<property name="methodNameResolver">
+		<!--  
+		<ref bean="parameterMethodNameResolver"/>
+		-->
+		<ref bean="internalPathMethodNameResolver" />
+	</property>
+</bean>
+
+
+<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+	<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"></property>
+	<property name="prefix" value="/WEB-INF/jsp/"></property>
+	<property name="suffix" value=".jsp"></property>
+</bean>
+
+</beans>
